@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AVVNL_File_System</RootNamespace>
     <AssemblyName>AVVNL_File_System</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -25,6 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,19 +46,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -102,6 +104,7 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
@@ -124,7 +127,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ApiResponse.cs" />
+    <Compile Include="Models\Data.cs" />
+    <Compile Include="Models\ErrorViewModel.cs" />
+    <Compile Include="Models\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -143,15 +151,133 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="css\classic.css" />
+    <Content Include="css\dark.css" />
+    <Content Include="css\light.css" />
+    <Content Include="css\modern.css" />
+    <Content Include="css\site.css" />
     <Content Include="favicon.ico" />
+    <Content Include="Files\3499fbe3-d490-4b87-8d53-e55c4d004977.jpg" />
+    <Content Include="Files\51cd5be6-b935-45f1-bba7-b6480cc04e4e.mp4" />
+    <Content Include="Files\574fd915-0c95-4084-b214-79f3d66ae0ab.mp4" />
+    <Content Include="Files\a4421b62-ad7a-4c9a-9be6-e6c451f0ba79.mp4" />
+    <Content Include="Files\b13d0920-8036-438b-a197-4396297c2a74.jpg" />
+    <Content Include="Files\b9bfe73e-a60b-4eca-84c0-36e78aecd8a6.jpg" />
+    <Content Include="fonts\ionicons.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="img\avatars\avatar-2.jpg" />
+    <Content Include="img\avatars\avatar-3.jpg" />
+    <Content Include="img\avatars\avatar-4.jpg" />
+    <Content Include="img\avatars\avatar-5.jpg" />
+    <Content Include="img\avatars\avatar.jpg" />
+    <Content Include="img\brands\b.svg" />
+    <Content Include="img\brands\bootstrap.png" />
+    <Content Include="img\brands\jquery.svg" />
+    <Content Include="img\brands\npm.svg" />
+    <Content Include="img\brands\sass.svg" />
+    <Content Include="img\brands\webpack.svg" />
+    <Content Include="img\photos\unsplash-1.jpg" />
+    <Content Include="img\photos\unsplash-2.jpg" />
+    <Content Include="img\photos\unsplash-3.jpg" />
+    <Content Include="img\screenshots\dark.png" />
+    <Content Include="img\screenshots\dashboard-analytics.png" />
+    <Content Include="img\screenshots\dashboard-default.png" />
+    <Content Include="img\screenshots\dashboard-e-commerce.png" />
+    <Content Include="img\screenshots\light.png" />
+    <Content Include="img\screenshots\modern.png" />
+    <Content Include="js\app.js" />
+    <Content Include="js\settings.js" />
+    <Content Include="js\site.js" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.min.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.rtl.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.min.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.rtl.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.min.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.rtl.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.min.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.rtl.css" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.rtl.min.css" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.bundle.js" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.esm.js" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.esm.min.js" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.js" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.min.js" />
+    <Content Include="lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <Content Include="lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <Content Include="lib\jquery-validation-unobtrusive\LICENSE.txt" />
+    <Content Include="lib\jquery-validation\dist\additional-methods.js" />
+    <Content Include="lib\jquery-validation\dist\additional-methods.min.js" />
+    <Content Include="lib\jquery-validation\dist\jquery.validate.js" />
+    <Content Include="lib\jquery-validation\dist\jquery.validate.min.js" />
+    <Content Include="lib\jquery\dist\jquery.js" />
+    <Content Include="lib\jquery\dist\jquery.min.js" />
+    <Content Include="lib\jquery\LICENSE.txt" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="css\classic.css.map" />
+    <Content Include="css\dark.css.map" />
+    <Content Include="css\light.css.map" />
+    <Content Include="css\modern.css.map" />
+    <Content Include="Files\0113c855-1acc-4b2c-ba00-c0a698f19cf1.pdf" />
+    <Content Include="Files\1315b898-814f-4900-8aca-d1cb2a8bec64.xls" />
+    <Content Include="Files\2f866d4d-d5f9-4976-8986-e0acbb525550.xlsx" />
+    <Content Include="Files\42ab8930-a0f4-4f85-9bd3-0763e5f9d338.xls" />
+    <Content Include="Files\4622c5aa-0880-4fd5-acdf-6f8c47af2584.doc" />
+    <Content Include="Files\78b9bf20-8c70-4d9b-b251-fda1b21fcda8.doc" />
+    <Content Include="Files\99c78ca5-4a3d-4278-811d-67ce4269a7bb.docx" />
+    <Content Include="Files\aa1fbc2f-0800-4ce3-a3ba-67468e96e9aa.pdf" />
+    <Content Include="Files\af22d37d-0264-4696-bb04-11c929685b5b.xls" />
+    <Content Include="Files\bf9f296d-5672-470d-9583-66fbe5621580.pdf" />
+    <Content Include="Files\d4e0f66f-2dca-4f30-90c4-127d18ca1ded.xls" />
+    <Content Include="Files\eb2a1952-62f4-4e62-8c6f-433b6ec8d8eb.docx" />
+    <Content Include="fonts\fa-brands-400.ttf" />
+    <Content Include="fonts\fa-brands-400.woff2" />
+    <Content Include="fonts\fa-regular-400.ttf" />
+    <Content Include="fonts\fa-regular-400.woff2" />
+    <Content Include="fonts\fa-solid-900.ttf" />
+    <Content Include="fonts\fa-solid-900.woff2" />
+    <Content Include="fonts\ionicons.eot" />
+    <Content Include="fonts\ionicons.ttf" />
+    <Content Include="fonts\ionicons.woff" />
+    <Content Include="fonts\ionicons.woff2" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.min.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.rtl.css.map" />
+    <Content Include="lib\bootstrap\dist\css\bootstrap.rtl.min.css.map" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.esm.js.map" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.esm.min.js.map" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.js.map" />
+    <Content Include="lib\bootstrap\dist\js\bootstrap.min.js.map" />
+    <Content Include="lib\bootstrap\LICENSE" />
+    <Content Include="lib\jquery-validation\LICENSE.md" />
+    <Content Include="lib\jquery\dist\jquery.min.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -177,10 +303,11 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\Home\Upload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

@@ -1,0 +1,358 @@
+﻿@model IEnumerable<AVVNL_File_System.Models.Data>
+
+@{
+    ViewBag.Title = "Dashbpard";
+}
+
+<h2>Dashbpard</h2>
+
+<style>
+    .slide {
+        display: none;
+    }
+
+    .active {
+        display: block;
+    }
+</style>
+
+<!-- Slideshow Container -->
+@* <embed src="@Url.Action("DownloadFile", "Document", new { fileName = record.FileName })" type="application/pdf" width="100%" height="600px" /> *@
+@* <a href="@Url.Action("DownloadFile", "Document", new { fileName = record.FileName })">Download Document</a></p> *@
+@* <a href="@Url.Action("DownloadFile", "Document", new { fileName = record.FileName })">Download Excel</a></p> *@
+@* <img src="@Url.Content(record.FileName)" alt="Image" width="100%" /> *@
+@* <source src="@Url.Content(record.FileName)" type="video/mp4"> *@
+@* <div id="slideshowContainer">
+        @foreach (var record in Model)
+        {
+            <div class="slide">
+                <h2>@record.Header</h2>
+                <p>@record.Desp</p>
+
+                <!-- Display the file type -->
+                @if (record.FileType.Substring(1) == "pdf")
+                {
+                    <embed src="/Files/@record.FileName" type="application/pdf" width="100%" height="600px" />
+
+                }
+                else if (record.FileType.Substring(1) == "doc" || record.FileType.Substring(1) == "docx")
+                {
+                    <p>
+                        Document preview:
+                        <a href="/Files/@record.FileName" download="@record.FileName">Download Document</a>
+                    </p>
+                }
+                else if (record.FileType.Substring(1) == "xls" || record.FileType.Substring(1) == "xlsx")
+                {
+                    <p>
+                        Excel file:
+                        <a href="/Files/@record.FileName" download="@record.FileName">Download Document</a>
+                    </p>
+                }
+                else if (record.FileType.Substring(1) == "jpeg" || record.FileType.Substring(1) == "jpg" || record.FileType.Substring(1) == "png")
+                {
+                    <img src="/Files/@record.FileName" alt="Image" width="100%" />
+                }
+                else if (record.FileType.Substring(1) == "video" || record.FileType.Substring(1) == "mp4")
+                {
+                    <video width="100%" height="600" controls>
+                        <source src="/Files/@record.FileName" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Navigation Controls -->
+    <div>
+        <button id="prevButton">Previous</button>
+        <button id="nextButton">Next</button>
+    </div> *@
+
+@* <script>
+        var currentSlide = 0; // To track the current slide
+        var slides = document.getElementsByClassName("slide");
+        var totalSlides = slides.length;
+        var slideInterval; // To hold the interval ID
+
+        // Function to show a slide
+        function showSlide(index) {
+            if (index >= totalSlides) {
+                currentSlide = 0; // If we reach the end, loop back to the first slide
+            } else if (index < 0) {
+                currentSlide = totalSlides - 1; // If we go back before the first, loop to the last slide
+            } else {
+                currentSlide = index;
+            }
+
+            // Hide all slides and remove active class
+            for (var i = 0; i < totalSlides; i++) {
+                slides[i].classList.remove("active");
+            }
+
+            // Show the current slide
+            slides[currentSlide].classList.add("active");
+        }
+
+        // Function to start the auto-slide
+        function startAutoSlide() {
+            slideInterval = setInterval(function () {
+                showSlide(currentSlide + 1); // Automatically show next slide
+            }, 3000);
+        }
+
+        // Function to stop the auto-slide
+        function stopAutoSlide() {
+            clearInterval(slideInterval);
+        }
+
+        // Show the first slide initially
+        showSlide(currentSlide);
+
+        // Event listeners for buttons
+        document.getElementById("nextButton").addEventListener("click", function () {
+            showSlide(currentSlide + 1); // Show next slide
+        });
+
+        document.getElementById("prevButton").addEventListener("click", function () {
+            showSlide(currentSlide - 1); // Show previous slide
+        });
+
+        // Start the slideshow initially
+        startAutoSlide();
+
+        // Add event listeners to stop/start auto-slide on mouseover/mouseout
+        var slideshowContainer = document.getElementById("slideshowContainer");
+        slideshowContainer.addEventListener("mouseover", stopAutoSlide);
+        slideshowContainer.addEventListener("mouseout", startAutoSlide);
+    </script> *@
+<div id="slideshowContainer">
+    @foreach (var record in Model)
+    {
+        <div class="slide" data-filetype="@record.FileType.Substring(1)" data-filepath="/Files/@record.FileName">
+            <h2>@record.Header</h2>
+            <p>@record.Desp</p>
+
+            <!-- Default content for non-PDF types -->
+            @if (record.FileType.Substring(1) == "doc" || record.FileType.Substring(1) == "docx")
+            {
+                <p>
+                    Document preview:
+                    <a href="/Files/@record.FileName" download="@record.FileName">Download Document</a>
+                </p>
+            }
+            else if (record.FileType.Substring(1) == "xls" || record.FileType.Substring(1) == "xlsx")
+            {
+                <p>
+                    Excel file:
+                    <a href="/Files/@record.FileName" download="@record.FileName">Download Document</a>
+                </p>
+            }
+            else if (record.FileType.Substring(1) == "jpeg" || record.FileType.Substring(1) == "jpg" || record.FileType.Substring(1) == "png")
+            {
+                <img src="/Files/@record.FileName" alt="Image" width="100%" />
+            }
+            else if (record.FileType.Substring(1) == "video" || record.FileType.Substring(1) == "mp4")
+            {
+                <video width="100%" height="600" autoplay controls>
+                    <source src="/Files/@record.FileName" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            }
+        </div>
+    }
+</div>
+
+<!-- Navigation Controls -->
+<div>
+    <button id="prevButton">Previous</button>
+    <button id="nextButton">Next</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+@*<script>
+        var currentSlide = 0;
+        var slides = document.getElementsByClassName("slide");
+        var totalSlides = slides.length;
+        var slideInterval;
+
+        async function renderPDF(filePath, container) {
+            const pdf = await pdfjsLib.getDocument(filePath).promise;
+
+            // Clear existing content in the container
+            container.innerHTML = '';
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 1.5 });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                const context = canvas.getContext('2d');
+                await page.render({ canvasContext: context, viewport }).promise;
+
+                container.appendChild(canvas);
+                await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait for 3 seconds
+            }
+        }
+
+        function showSlide(index) {
+            if (index >= totalSlides) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = index;
+            }
+
+            for (let i = 0; i < totalSlides; i++) {
+                slides[i].classList.remove("active");
+            }
+
+            const currentElement = slides[currentSlide];
+            currentElement.classList.add("active");
+
+            const fileType = currentElement.getAttribute("data-filetype");
+            const filePath = currentElement.getAttribute("data-filepath");
+
+            if (fileType === "pdf") {
+                renderPDF(filePath, currentElement);
+            }
+        }
+
+        function startAutoSlide() {
+            slideInterval = setInterval(function () {
+                showSlide(currentSlide + 1);
+            }, 3000); // Default 3 seconds per slide
+        }
+
+        function stopAutoSlide() {
+            clearInterval(slideInterval);
+        }
+
+        showSlide(currentSlide);
+        startAutoSlide();
+
+        document.getElementById("nextButton").addEventListener("click", function () {
+            showSlide(currentSlide + 1);
+        });
+
+        document.getElementById("prevButton").addEventListener("click", function () {
+            showSlide(currentSlide - 1);
+        });
+
+        const slideshowContainer = document.getElementById("slideshowContainer");
+        slideshowContainer.addEventListener("mouseover", stopAutoSlide);
+        slideshowContainer.addEventListener("mouseout", startAutoSlide);
+    </script> *@
+<script>
+var currentSlide = 0;
+var slides = document.getElementsByClassName("slide");
+var totalSlides = slides.length;
+var slideInterval;
+var isPDFSlideshow = false;
+
+// Render and show PDF pages as a slideshow
+async function renderPDFSlideshow(filePath, container) {
+    const pdf = await pdfjsLib.getDocument(filePath).promise;
+    const numPages = pdf.numPages;
+    let currentPage = 1;
+
+    isPDFSlideshow = true;
+
+    async function showPage() {
+        if (currentPage > numPages || !isPDFSlideshow) {
+            isPDFSlideshow = false; // End PDF slideshow
+            showSlide(currentSlide + 1); // Move to the next slide
+            return;
+        }
+
+        // Render the current page
+        const page = await pdf.getPage(currentPage);
+        const viewport = page.getViewport({ scale: 1.5 });
+
+        container.innerHTML = ''; // Clear the container
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        const context = canvas.getContext('2d');
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        container.appendChild(canvas);
+
+        // Wait for 3 seconds, then move to the next page
+        setTimeout(() => {
+            currentPage++;
+            showPage();
+        }, 3000);
+    }
+
+    showPage(); // Start showing pages
+}
+
+function showSlide(index) {
+    // Stop any ongoing PDF slideshow
+    isPDFSlideshow = false;
+
+    if (index >= totalSlides) {
+        currentSlide = 0; // Loop to the first slide
+    } else if (index < 0) {
+        currentSlide = totalSlides - 1; // Loop to the last slide
+    } else {
+        currentSlide = index;
+    }
+
+    for (let i = 0; i < totalSlides; i++) {
+        slides[i].classList.remove("active");
+    }
+
+    const currentElement = slides[currentSlide];
+    currentElement.classList.add("active");
+
+    const fileType = currentElement.getAttribute("data-filetype");
+    const filePath = currentElement.getAttribute("data-filepath");
+
+    if (fileType === "pdf") {
+        renderPDFSlideshow(filePath, currentElement);
+    }
+}
+
+function startAutoSlide() {
+    slideInterval = setInterval(function () {
+        if (!isPDFSlideshow) {
+            showSlide(currentSlide + 1);
+        }
+    }, 3000); // Default 3 seconds per slide
+}
+
+function stopAutoSlide() {
+    clearInterval(slideInterval);
+}
+
+// Initialize the slideshow
+showSlide(currentSlide);
+startAutoSlide();
+
+// Event listeners for navigation
+document.getElementById("nextButton").addEventListener("click", function () {
+    stopAutoSlide();
+    showSlide(currentSlide + 1);
+    startAutoSlide();
+});
+
+document.getElementById("prevButton").addEventListener("click", function () {
+    stopAutoSlide();
+    showSlide(currentSlide - 1);
+    startAutoSlide();
+});
+
+// Pause auto-slide on hover
+const slideshowContainer = document.getElementById("slideshowContainer");
+slideshowContainer.addEventListener("mouseover", stopAutoSlide);
+slideshowContainer.addEventListener("mouseout", startAutoSlide);
+</script>
+

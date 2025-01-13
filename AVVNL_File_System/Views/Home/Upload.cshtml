@@ -1,0 +1,156 @@
+﻿@model IEnumerable<AVVNL_File_System.Models.Data>
+@{
+    ViewBag.Title = "Upload Documents";
+    int i = 1;
+}
+
+<h3>@ViewData["Title"]</h3>
+<form asp-action="Upload" enctype="multipart/form-data" method="post">
+    <div class="row mb-3">
+        <div class="col-12">
+            <span class="text-danger">@ViewBag.Err</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <h5 class="card-title mb-0">Header</h5>
+            <input type="text" name="header" class="form-control" id="floatingInput1" placeholder="name@example.com" required>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <h5 class="card-title mb-0">Description</h5>
+            <textarea class="form-control" name="desp" placeholder="Leave a comment here" id="floatingTextarea1" style="height: 100px" required></textarea>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <h5 class="card-title mb-0">Select File</h5>
+            <input class="form-control" id="file" name="photo" type="file" required />
+        </div>
+    </div>
+    <div class="row float-end">
+        <div class="col-12">
+            <input type="submit" class="btn btn-primary" />
+        </div>
+    </div>
+
+</form>
+<div class="row mt-5">
+    <div class="col-12">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>S.No.#</th>
+                    <th>Header</th>
+                    <th>Description</th>
+                    <th>File Type</th>
+                    <th>Link</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(i++). </td>
+                        <td>@item.Header</td>
+                        <td>@item.Desp</td>
+                        <td>@item.FileType</td>
+                        <td><a href="javascript:void(0);" class="open-file" data-filename="@item.FileName">Click Here</a></td>
+                        <td><button class="btn btn-danger" onclick="return doDelete(@item.Id);"><i class="fa fa-trash"></i></button></td>
+                        <!--<td>
+                            <a asp-action="ViewDocument" asp-route-fileName="@item.FileName">Click</a>-->
+                            @* <iframe src="https://docs.google.com/viewer?url=http://localhost:5116/{@item.FileName}&embedded=true" width="100%" height="600"></iframe> *@
+                        <!--</td>-->
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Placeholder for the iframe -->
+<div id="fileViewerContainer" style="margin-top: 20px;">
+    <iframe id="fileViewer" width="100%" height="600px" style="border: none;"></iframe>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".open-file").click(function (e) {
+            e.preventDefault();
+
+            // Get the filename and file type from the clicked link
+            var fileName = $(this).data("filename");
+            var fileType = $(this).closest("tr").find("td:nth-child(3)").text().trim();
+
+            // Construct the file URL (update path as needed)
+            var fileUrl = `../Files/${fileName}`;
+            console.log(fileUrl);
+            // Check if the file type is 'doc' and use Google Docs Viewer
+            if (fileType.toLowerCase() === "doc" || fileType.toLowerCase() === "docx") {
+                fileUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+            }
+
+            // Update the iframe's src attribute to load the file
+            $("#fileViewer").attr("src", fileUrl);
+        });
+    });
+    function doDelete(recId) {
+        swal({
+            title: "Are you Sure?",
+            // text: "Confirm button",
+            icon: "warning",
+            buttons: [
+                'No, cancel it!',
+                'Yes, I am sure!'
+            ],
+            dangerMode: true,
+        }).then(function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: '/Home/Delete',
+                    type: 'GET',
+                    data: { id: recId },
+                    success: function (response) {
+                        console.log(response.data);
+                        if (response.data.Status == 1) {
+                            location.reload();
+                        } else {
+                            swal("Error!", response.data.StatusMessage, "error", { timer: 5000 });
+                        }
+                    },
+                    error: function () {
+                        swal("Error!", "Failed to delete the record. Please try again later.", "error", { timer: 5000 });
+                    }
+                });
+            }
+        });
+    }
+</script>
+@*
+        <div class="card-body">
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <h5 class="card-title mb-0">Header</h5>
+                    <input type="email" class="form-control" id="floatingInput1" placeholder="name@example.com">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <h5 class="card-title mb-0">Description</h5>
+                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea1" style="height: 100px"></textarea>
+                </div>
+            </div>
+            <div class="col-3">
+                Select File
+                <input id="file" name="photo" type="file" required />
+
+            </div>
+            <div class="col-3">
+                <input type="submit" class="btn btn-primary" />
+            </div>
+        </div>
+        </div>
+    </form> *@
