@@ -16,6 +16,7 @@ namespace AVVNL_File_System.Models
         public string Desp { get; set; }
         public string FileType { get; set; }
         public string FileName { get; set; }
+        public string URL { get; set; }
 
         public async Task<ApiResponse> AddEditDoc(Data data)
         {
@@ -24,7 +25,7 @@ namespace AVVNL_File_System.Models
             {
                 using (SqlConnection conn = new SqlConnection(Utility.Connection))
                 {
-                    int res = conn.Execute("insert into Data(Header,Desp,FileName,FileType) values (@Header,@Desp,@FileName,@FileType)", data);
+                    int res = conn.Execute("insert into Data(Header,Desp,FileName,FileType,URL) values (@Header,@Desp,@FileName,@FileType,@URL)", data);
                     if (res == 1)
                     {
                         apiResponse.Status = 200;

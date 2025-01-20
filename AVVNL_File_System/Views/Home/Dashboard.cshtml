@@ -160,7 +160,12 @@
                     Your browser does not support the video tag.
                 </video>
             }
+            else if (record.FileType.Substring(1) == "url")
+            {
+                <a href="@record.URL" data-url="@record.URL" target="_blank">Click Here</a>
+            }
         </div>
+        <div id="iframeContainer"></div>
     }
 </div>
 
@@ -249,110 +254,134 @@
         slideshowContainer.addEventListener("mouseout", startAutoSlide);
     </script> *@
 <script>
-var currentSlide = 0;
-var slides = document.getElementsByClassName("slide");
-var totalSlides = slides.length;
-var slideInterval;
-var isPDFSlideshow = false;
+    var currentSlide = 0;
+    var slides = document.getElementsByClassName("slide");
+    var totalSlides = slides.length;
+    var slideInterval;
+    var isPDFSlideshow = false;
 
-// Render and show PDF pages as a slideshow
-async function renderPDFSlideshow(filePath, container) {
-    const pdf = await pdfjsLib.getDocument(filePath).promise;
-    const numPages = pdf.numPages;
-    let currentPage = 1;
+    // Render and show PDF pages as a slideshow
+    async function renderPDFSlideshow(filePath, container) {
+        const pdf = await pdfjsLib.getDocument(filePath).promise;
+        const numPages = pdf.numPages;
+        let currentPage = 1;
 
-    isPDFSlideshow = true;
+        isPDFSlideshow = true;
 
-    async function showPage() {
-        if (currentPage > numPages || !isPDFSlideshow) {
-            isPDFSlideshow = false; // End PDF slideshow
-            showSlide(currentSlide + 1); // Move to the next slide
-            return;
+        async function showPage() {
+            if (currentPage > numPages || !isPDFSlideshow) {
+                isPDFSlideshow = false; // End PDF slideshow
+                showSlide(currentSlide + 1); // Move to the next slide
+                return;
+            }
+
+            // Render the current page
+            const page = await pdf.getPage(currentPage);
+            const viewport = page.getViewport({ scale: 1.5 });
+
+            container.innerHTML = ''; // Clear the container
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            const context = canvas.getContext('2d');
+            await page.render({ canvasContext: context, viewport }).promise;
+
+            container.appendChild(canvas);
+
+            // Wait for 3 seconds, then move to the next page
+            setTimeout(() => {
+                currentPage++;
+                showPage();
+            }, 10000);
         }
 
-        // Render the current page
-        const page = await pdf.getPage(currentPage);
-        const viewport = page.getViewport({ scale: 1.5 });
-
-        container.innerHTML = ''; // Clear the container
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        const context = canvas.getContext('2d');
-        await page.render({ canvasContext: context, viewport }).promise;
-
-        container.appendChild(canvas);
-
-        // Wait for 3 seconds, then move to the next page
-        setTimeout(() => {
-            currentPage++;
-            showPage();
-        }, 3000);
+        showPage(); // Start showing pages
     }
 
-    showPage(); // Start showing pages
-}
+    function showSlide(index) {
+        // Stop any ongoing PDF slideshow
+        isPDFSlideshow = false;
 
-function showSlide(index) {
-    // Stop any ongoing PDF slideshow
-    isPDFSlideshow = false;
-
-    if (index >= totalSlides) {
-        currentSlide = 0; // Loop to the first slide
-    } else if (index < 0) {
-        currentSlide = totalSlides - 1; // Loop to the last slide
-    } else {
-        currentSlide = index;
-    }
-
-    for (let i = 0; i < totalSlides; i++) {
-        slides[i].classList.remove("active");
-    }
-
-    const currentElement = slides[currentSlide];
-    currentElement.classList.add("active");
-
-    const fileType = currentElement.getAttribute("data-filetype");
-    const filePath = currentElement.getAttribute("data-filepath");
-
-    if (fileType === "pdf") {
-        renderPDFSlideshow(filePath, currentElement);
-    }
-}
-
-function startAutoSlide() {
-    slideInterval = setInterval(function () {
-        if (!isPDFSlideshow) {
-            showSlide(currentSlide + 1);
+        if (index >= totalSlides) {
+            currentSlide = 0; // Loop to the first slide
+        } else if (index < 0) {
+            currentSlide = totalSlides - 1; // Loop to the last slide
+        } else {
+            currentSlide = index;
         }
-    }, 3000); // Default 3 seconds per slide
-}
 
-function stopAutoSlide() {
-    clearInterval(slideInterval);
-}
+        for (let i = 0; i < totalSlides; i++) {
+            slides[i].classList.remove("active");
+        }
 
-// Initialize the slideshow
-showSlide(currentSlide);
-startAutoSlide();
+        const currentElement = slides[currentSlide];
+        currentElement.classList.add("active");
 
-// Event listeners for navigation
-document.getElementById("nextButton").addEventListener("click", function () {
-    stopAutoSlide();
-    showSlide(currentSlide + 1);
+        const fileType = currentElement.getAttribute("data-filetype");
+        const filePath = currentElement.getAttribute("data-filepath");
+
+        if (fileType === "pdf") {
+            renderPDFSlideshow(filePath, currentElement);
+        } else if (fileType == "url") {
+            const iframeContainer = document.getElementById("iframeContainer"); // Ensure this exists in your HTML
+            iframeContainer.innerHTML = '';
+            const anchorTag = currentElement.querySelector("a[href]");
+            if (anchorTag) {
+                const hrefValue = anchorTag.getAttribute("href"); // Get the href value
+                console.log("URL from href:", hrefValue);
+
+                // Open the URL in an iframe
+                const iframe = document.createElement("iframe");
+                iframe.src = hrefValue;
+                iframe.width = "100%";
+                iframe.height = "600px"; // Adjust as needed
+                iframe.style.border = "none";
+
+                //currentElement.innerHTML = ''; // Clear existing content
+                //currentElement.appendChild(iframe);
+
+                iframeContainer.appendChild(iframe);
+                // Automatically move to the next slide after 3 seconds
+                setTimeout(() => {
+                    showSlide(currentSlide + 1);
+                }, 3000); // Adjust timing as needed
+            }
+        }
+    }
+
+    function startAutoSlide() {
+        slideInterval = setInterval(function () {
+            if (!isPDFSlideshow) {
+                showSlide(currentSlide + 1);
+            }
+        }, 3000); // Default 3 seconds per slide
+    }
+
+    function stopAutoSlide() {
+        clearInterval(slideInterval);
+    }
+
+    // Initialize the slideshow
+    showSlide(currentSlide);
     startAutoSlide();
-});
 
-document.getElementById("prevButton").addEventListener("click", function () {
-    stopAutoSlide();
-    showSlide(currentSlide - 1);
-    startAutoSlide();
-});
+    // Event listeners for navigation
+    document.getElementById("nextButton").addEventListener("click", function () {
+        stopAutoSlide();
+        showSlide(currentSlide + 1);
+        startAutoSlide();
+    });
 
-// Pause auto-slide on hover
-const slideshowContainer = document.getElementById("slideshowContainer");
-slideshowContainer.addEventListener("mouseover", stopAutoSlide);
-slideshowContainer.addEventListener("mouseout", startAutoSlide);
+    document.getElementById("prevButton").addEventListener("click", function () {
+        stopAutoSlide();
+        showSlide(currentSlide - 1);
+        startAutoSlide();
+    });
+
+    // Pause auto-slide on hover
+    const slideshowContainer = document.getElementById("slideshowContainer");
+    slideshowContainer.addEventListener("mouseover", stopAutoSlide);
+    slideshowContainer.addEventListener("mouseout", startAutoSlide);
 </script>
 

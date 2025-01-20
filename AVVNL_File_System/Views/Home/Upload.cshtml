@@ -24,9 +24,21 @@
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col-6">
+        <div class="col-1">
+            File <input type="radio" class="chkType" name="chkType" value="File" checked />
+        </div>
+        <div class="col-3">
+            URL <input type="radio" class="chkType" name="chkType" value="URL" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6" id="divFile">
             <h5 class="card-title mb-0">Select File</h5>
-            <input class="form-control" id="file" name="photo" type="file" required />
+            <input class="form-control" id="file" name="photo" type="file" />
+        </div>
+        <div class="col-6" id="divURL">
+            <h5 class="card-title mb-0">URL</h5>
+            <input class="form-control" id="url" name="url" type="text" />
         </div>
     </div>
     <div class="row float-end">
@@ -56,9 +68,16 @@
                         <td>@(i++). </td>
                         <td>@item.Header</td>
                         <td>@item.Desp</td>
-                        <td>@item.FileType</td>
+                        <td>@item.FileType.Substring(1)</td>
                         <td><a href="javascript:void(0);" class="open-file" data-filename="@item.FileName">Click Here</a></td>
                         <td><button class="btn btn-danger" onclick="return doDelete(@item.Id);"><i class="fa fa-trash"></i></button></td>
+
+
+
+
+
+
+
                         <!--<td>
                             <a asp-action="ViewDocument" asp-route-fileName="@item.FileName">Click</a>-->
                             @* <iframe src="https://docs.google.com/viewer?url=http://localhost:5116/{@item.FileName}&embedded=true" width="100%" height="600"></iframe> *@
@@ -77,6 +96,20 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        $("#divFile").show();
+        $("#divURL").hide();
+        $(".chkType").change(function () {
+            var type = $("input[name='chkType']:checked").val();
+            console.log(type);
+            if (type == "File") {
+                $("#divFile").show();
+                $("#divURL").hide();
+            } else {
+                $("#divURL").show();
+                $("#divFile").hide();
+
+            }
+        });
         $(".open-file").click(function (e) {
             e.preventDefault();
 
