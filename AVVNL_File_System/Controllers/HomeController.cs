@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -59,6 +60,14 @@ namespace AVVNL_File_System.Controllers
 		{
 			List<Data> list = new List<Data>();
 			list = _doc.GetList();
+			foreach (var record in list)
+			{
+				if (record.FileType?.Substring(1)?.ToLower() == "url")
+				{
+					// Assuming the URL property exists in your Data model
+					record.URL = Url.Action("Proxy", "Home", new { url = record.URL });
+				}
+			}
 			ViewBag.Path = fileDirectory;
 			return View(list);
 		}
@@ -67,7 +76,42 @@ namespace AVVNL_File_System.Controllers
 		{
 			List<Data> list = new List<Data>();
 			list = _doc.GetList();
+			
+
 			return View(list);
+		}
+		public ActionResult Proxy(string url)
+		{
+			if (string.IsNullOrEmpty(url))
+				return new HttpStatusCodeResult(400, "Bad Request");
+
+			try
+			{
+				using (var client = new HttpClient())
+				{
+					var response = client.GetAsync(url).Result;
+
+					if (response.IsSuccessStatusCode)
+					{
+						// Get the content from the target URL
+						var content = response.Content.ReadAsStringAsync().Result;
+
+						// Set the appropriate content type
+						Response.ContentType = response.Content.Headers.ContentType.ToString();
+
+						// Return the proxied content
+						return Content(content);
+					}
+					else
+					{
+						return new HttpStatusCodeResult(response.StatusCode, "Failed to fetch content");
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				return new HttpStatusCodeResult(500, $"Error: {ex.Message}");
+			}
 		}
 		[HttpPost]
 		public async Task<ActionResult> Upload(HttpPostedFileBase photo, string header, string desp, string url, string chkType)

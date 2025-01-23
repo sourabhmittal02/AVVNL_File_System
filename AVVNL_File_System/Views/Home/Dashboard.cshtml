@@ -133,7 +133,7 @@
         <div class="slide" data-filetype="@record.FileType.Substring(1)" data-filepath="/Files/@record.FileName">
             <h2>@record.Header</h2>
             <p>@record.Desp</p>
-
+            <div class="pdf-container"></div>
             <!-- Default content for non-PDF types -->
             @if (record.FileType.Substring(1) == "doc" || record.FileType.Substring(1) == "docx")
             {
@@ -163,6 +163,7 @@
             else if (record.FileType.Substring(1) == "url")
             {
                 <a href="@record.URL" data-url="@record.URL" target="_blank">Click Here</a>
+                <iframe src="@record.URL" height="600px" width="100%"></iframe>
             }
         </div>
         <div id="iframeContainer"></div>
@@ -267,7 +268,8 @@
         let currentPage = 1;
 
         isPDFSlideshow = true;
-
+        container = container.querySelector('.pdf-container'); // Select the dedicated container for PDF
+        if (!container) return;
         async function showPage() {
             if (currentPage > numPages || !isPDFSlideshow) {
                 isPDFSlideshow = false; // End PDF slideshow
@@ -322,32 +324,37 @@
         const filePath = currentElement.getAttribute("data-filepath");
 
         if (fileType === "pdf") {
+            var x = document.getElementById("iframeContainer");
+            x.style.display = "none";
             renderPDFSlideshow(filePath, currentElement);
-        } else if (fileType == "url") {
-            const iframeContainer = document.getElementById("iframeContainer"); // Ensure this exists in your HTML
-            iframeContainer.innerHTML = '';
-            const anchorTag = currentElement.querySelector("a[href]");
-            if (anchorTag) {
-                const hrefValue = anchorTag.getAttribute("href"); // Get the href value
-                console.log("URL from href:", hrefValue);
-
-                // Open the URL in an iframe
-                const iframe = document.createElement("iframe");
-                iframe.src = hrefValue;
-                iframe.width = "100%";
-                iframe.height = "600px"; // Adjust as needed
-                iframe.style.border = "none";
-
-                //currentElement.innerHTML = ''; // Clear existing content
-                //currentElement.appendChild(iframe);
-
-                iframeContainer.appendChild(iframe);
-                // Automatically move to the next slide after 3 seconds
-                setTimeout(() => {
-                    showSlide(currentSlide + 1);
-                }, 3000); // Adjust timing as needed
-            }
         }
+        //else if (fileType == "url") {
+        //    const iframeContainer = document.getElementById("iframeContainer"); // Ensure this exists in your HTML
+        //    iframeContainer.style.display = 'block';
+        //    iframeContainer.innerHTML = '';
+        //    const anchorTag = currentElement.querySelector("a[href]");
+        //    if (anchorTag) {
+        //        const hrefValue = anchorTag.getAttribute("href"); // Get the href value
+        //        console.log("URL from href:", hrefValue);
+
+        //        // Open the URL in an iframe
+        //        const iframe = document.createElement("iframe");
+        //         iframe.src = hrefValue;
+        //        //iframe.src = `${encodeURIComponent(hrefValue)}`;
+        //        iframe.width = "100%";
+        //        iframe.height = "600px"; // Adjust as needed
+        //        iframe.style.border = "none";
+
+        //        //currentElement.innerHTML = ''; // Clear existing content
+        //        //currentElement.appendChild(iframe);
+
+        //        iframeContainer.appendChild(iframe);
+        //        // Automatically move to the next slide after 3 seconds
+        //        setTimeout(() => {
+        //            showSlide(currentSlide + 1);
+        //        }, 3000); // Adjust timing as needed
+        //    }
+        //}
     }
 
     function startAutoSlide() {
